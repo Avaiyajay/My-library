@@ -13,7 +13,7 @@ router.get('/',async (req,res) => {
         res.render("authors/listauthors" , { authors : authors , searchOptions : req.query.searchauthor });
     }
     catch{
-        res.render('/')
+        res.redirect('author')
     }
 })
 
@@ -22,18 +22,37 @@ router.get('/new',(req,res) => {
 })
 
 router.post('/', async (req,res) => {
+    // const author = new Author({
+    //     name : req.body.name
+    // })
+    // try{
+    //     const res = await author.save()
+    //     res.redirect('author')
+    // }
+    // catch{
+    //     res.render('authors/createauthor' , {
+    //         author : author,
+    //         errorMessage : "Failed to create author"
+    //     })
+    //     console.log("it come here")
+    // }
+
     const author = new Author({
         name : req.body.name
     })
-    try{
-        const res = await author.save()
-        res.redirect('/author')
-    }catch{
-        res.render('authro/new' , {
-            author : author,
-            errMessage : "Failed to create author"
-        })
-    }
+    author.save((err,newauthor) => {
+        if(err) {
+            res.render('authors/createauthor',{ 
+                author : author,
+                errorMessage : "Error occured"
+            })
+        }
+        else{
+            res.redirect('author')
+        }
+    })
+    // console.log(req.body.name)
+    // res.redirect('/')
 })  
 
 module.exports = router;
